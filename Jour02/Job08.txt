@@ -1,0 +1,130 @@
+import mysql.connector
+
+mydb = mysql.connector.connect(
+    # Informations de connexion à la base de données
+    host="localhost",
+    user='root',
+    password='root',
+    database='zoo',
+)
+
+class Directeur:
+    def __init__(self, host, user, password, database):
+        self.mydb = mysql.connector.connect(
+            host=host,
+            user=user,
+            password=password,
+            database=database
+        )
+        self.cursor = self.mydb.cursor()
+
+    def create_cage(self, id_cage, superficie, capacite):
+        query = "INSERT INTO cage (id_cage, superficie, capacite) VALUES (%s, %s, %s)"
+        values = (id_cage, superficie, capacite)
+        self.cursor.execute(query, values)
+        self.mydb.commit()
+
+    def read_cage(self):
+        query = "SELECT * FROM cage"
+        self.cursor.execute(query)
+        result = self.cursor.fetchall()
+        if result :
+            for cage in result:
+                print(cage)
+
+    def update_cage(self, id_cage, new_capacite):
+        query = "UPDATE cage SET capacite = %s WHERE id_cage = %s"
+        values = (new_capacite, id_cage)
+        self.cursor.execute(query, values)
+        self.mydb.commit()
+
+    def delete_cage(self, id_cage):
+        query = "DELETE FROM cage WHERE id_cage = %s"
+        values = (id_cage,)
+        self.cursor.execute(query, values)
+        self.mydb.commit()
+    
+    def create_animal(self, nom, race, id_type_cage, date_de_naissance, pays_d_origine):
+        query = "INSERT INTO animal (nom, race, id_type_cage, date_de_naissance, pays_d_origine) VALUES (%s, %s, %s, %s, %s)"
+        values = (nom, race, id_type_cage, date_de_naissance, pays_d_origine)
+        self.cursor.execute(query, values)
+        self.mydb.commit()
+
+    def read_animal(self):
+        query = "SELECT * FROM animal"
+        self.cursor.execute(query)
+        result = self.cursor.fetchall()
+        if result :
+            for animal in result:
+                print(animal)
+
+    def update_animal(self, animal_id, new_id_type_cage):
+        query = "UPDATE animal SET id_type_cage = %s WHERE id = %s"
+        values = (new_id_type_cage, animal_id)
+        self.cursor.execute(query, values)
+        self.mydb.commit()
+
+    def delete_animal(self, animal_id):
+        query = "DELETE FROM animal WHERE id = %s"
+        values = (animal_id,)
+        self.cursor.execute(query, values)
+        self.mydb.commit()
+
+    def calculer_superficie_totale(self):
+        query = "SELECT SUM(superficie) FROM cage"
+        self.cursor.execute(query)
+        result = self.cursor.fetchall()
+        if result :
+            for superficie in result:
+                print(f"La superficie totale des cages est de :{superficie}")
+
+    def close_connection(self):
+        self.cursor.close()
+
+
+# Créer un objet de type directeur
+directeur = Directeur("localhost", "root", "root", "zoo")
+
+# Créer une cage
+directeur.create_cage(16, 100, 10)
+directeur.create_cage(17, 200, 20)
+directeur.create_cage(18, 300, 30)
+
+# Lire les cages
+directeur.read_cage()
+
+# Modifier une cage
+
+directeur.update_cage(1, 20)
+
+# Lire les cages
+directeur.read_cage()
+
+# Supprimer une cage
+directeur.delete_cage(3)
+
+# Lire les cages
+directeur.read_cage()
+
+# Créer un animal
+directeur.create_animal("Toto", "Chien", 1, "2020-01-01", "France")
+directeur.create_animal("Tata", "Chat", 2, "2020-01-01", "France")
+directeur.create_animal("Titi", "Lion", 3, "2020-01-01", "France")
+
+# Lire les animaux
+directeur.read_animal()
+
+# Modifier un animal
+directeur.update_animal(1, 2)
+
+# Lire les animaux
+directeur.read_animal()
+
+# Supprimer un animal
+directeur.delete_animal(3)
+
+# Lire les animaux
+directeur.read_animal()
+
+# Calculer la superficie totale
+directeur.calculer_superficie_totale()

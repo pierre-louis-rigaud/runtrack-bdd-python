@@ -1,0 +1,22 @@
+import mysql.connector
+
+mydb = mysql.connector.connect(
+
+    # Informations de connexion à la base de données
+    host = "localhost",
+    user = 'root',
+    password = 'root',
+    database = 'LaPlateforme',
+)
+query = "SELECT * FROM etudiant"
+
+cursor = mydb.cursor()
+cursor.execute(query)
+
+
+for etudiant in cursor:
+    print(etudiant)
+
+
+cursor.close()
+mydb.close()
